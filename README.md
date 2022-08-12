@@ -148,7 +148,6 @@
 
 <ul>
     <li><strong>Endpoint</strong>: /api/products/{int:id} </li>
-    <li><strong>Endpoint</strong>: /api/products/{String:slug} </li>
     <li><strong>Request</strong>: GET</li>
     <li> <strong>Output</strong>:
     <ul>
@@ -175,7 +174,6 @@
 
 <ul>
     <li><strong>Endpoint</strong>: /api/products/{int:id} </li>
-    <li><strong>Endpoint</strong>: /api/products/{String:slug} </li>
     <li><strong>Request</strong>: PATCH</li>
     <li> <strong>Fields</strong> <i>(One or multiple)</i>:
     <ul>
@@ -190,11 +188,10 @@
 </ul>
 
 
-### 4. Delete
+### 5. Delete
 
 <ul>
     <li><strong>Endpoint</strong>: /api/products/{int:id} </li>
-    <li><strong>Endpoint</strong>: /api/products/{String:slug} </li>
     <li><strong>Request</strong>: DELETE</li>
 
 </ul>
