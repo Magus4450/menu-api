@@ -7,6 +7,7 @@ class RestaurantListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Restaurant.objects.all()
     serializer_class = serializers.RestaurantSerializer
 
+
 class RestaurantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Restaurant.objects.all()
     serializer_class = serializers.RestaurantSerializer
@@ -24,9 +25,14 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
 
+
+
+
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
+
+    
 
 
 
