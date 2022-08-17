@@ -1,5 +1,4 @@
-from email.utils import localtime
-from msilib.schema import SelfReg
+
 from rest_framework import serializers
 from .models import Restaurant, Category, Product
 from django.utils.text import slugify
