@@ -1,4 +1,32 @@
+# Docker commands
+- Building image
+
+```bash
+
+docker build --tag <name> .
+
+```
+
+- Running Container
+
+```bash
+
+docker run --publish 8000:8000 <name>
+
+```
+
+- Getting into container
+
+```bash
+
+sudo docker exec -t -i <containerId> bash
+
+```
+
+---
+
 ## Restaurants
+
 
 ### 1. Create
 
