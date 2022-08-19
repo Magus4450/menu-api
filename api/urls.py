@@ -15,4 +15,5 @@ urlpatterns = [
     path('products/<int:pk>/', views.ProductRetrieveUpdateDestroyAPIView.as_view()),
     path('products/<str:slug>/', views.ProductRetrieveUpdateDestroyAPIView.as_view(lookup_field='slug')),
 
+    path('upload/', views.upload_image),
 ]
