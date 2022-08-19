@@ -1,4 +1,5 @@
 # Docker commands
+
 - Building image
 
 ```bash
@@ -19,7 +20,7 @@ docker run --publish 8000:8000 <name>
 
 ```bash
 
-sudo docker exec -t -i <containerId> bash
+docker exec -t -i <containerId> bash
 
 ```
 
