@@ -30,7 +30,11 @@ INSTALLED_APPS = [
 
     # Third Party
     'rest_framework',
-	'corsheaders',
+    'corsheaders',
+    'django_filters',
+
+	
+
 
     # Custom
     'api',
