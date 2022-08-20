@@ -1,15 +1,21 @@
-from . import models
+from rest_framework.decorators import api_view
+from django.conf import settings
+from PIL import Image
+from rest_framework import status
+from rest_framework.response import Response
+from . import models, serializers
 from django.db.models import Q
 from rest_framework import generics
-from . import serializers
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 class RestaurantListCreateAPIView(generics.ListCreateAPIView):
-    queryset = models.Restaurant.objects.filter(Q(status="ACTIVE") | Q(status="PENDING"))
+
+    queryset = models.Restaurant.objects.all()
     serializer_class = serializers.RestaurantSerializer
-    
-    def get_queryset(self):
-        username = self.request.query_params.get('username')
-        return super().get_queryset() 
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'name', 'slug', 'location', 'status']
+
 
 class RestaurantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Restaurant.objects.all()
@@ -23,11 +29,15 @@ class RestaurantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
             "status": "success",
         }
         return Response(data, status=status.HTTP_200_OK)
-        
+
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
-    queryset = models.Category.objects.filter(Q(status="ACTIVE") | Q(status="PENDING"))
+    queryset = models.Category.objects.filter(
+        Q(status="ACTIVE") | Q(status="PENDING"))
     serializer_class = serializers.CategorySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'name', 'slug', 'restaurantId', 'status']
+
 
 class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Category.objects.all()
@@ -44,11 +54,11 @@ class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    queryset = models.Product.objects.filter(Q(status="ACTIVE") | Q(status="PENDING"))
+    queryset = models.Product.objects.filter(
+        Q(status="ACTIVE") | Q(status="PENDING"))
     serializer_class = serializers.ProductSerializer
-
-
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'name', 'categoryId', 'restaurantId', 'price', 'status']
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -64,55 +74,66 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         }
         return Response(data, status=status.HTTP_200_OK)
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from PIL import Image
-from django.conf import settings
 
 @api_view(['POST'])
 def upload_image(request):
     image = request.data["image"]
 
+    # If type not specified set type to image
     try:
-        type = request.data["type"]
+        type_img = request.data["type"]
     except:
-        type = "image"
+        type_img = "image"
 
     import os
-    ROOT_URL = settings.MEDIA_ROOT
-    print(ROOT_URL)
-    FINAL_URL = os.path.join(ROOT_URL, type)
+    from django.utils import timezone
 
+    # Access media root url
+    ROOT_URL = settings.MEDIA_ROOT
+    # Add type name to media root
+    FINAL_URL = os.path.join(ROOT_URL, type_img)
+
+    # Create directory of type if doesnt exist
     if not os.path.exists(FINAL_URL):
         os.makedirs(FINAL_URL)
-    
 
-    im = Image.open(image.temporary_file_path())
-    
-    from django.utils import timezone
-    
+
+    # Get current time
     time = str(timezone.now().strftime("%Y%m%d%H%M%S"))
+
+    # Getting image name and format
     split = image.name.split(".")
     name = "".join(split[:-1])
     format = split[-1]
+
+    # Finaly image name after adding time and format
     image_name = f"{name}{time}.{format}"
-    # image_name = image.name.replace(image.format, "") + time + "." + image.format
+
     IMG_URL = os.path.join(FINAL_URL, image_name)
 
+    from django.core.files import uploadedfile
 
-    im = im.save(IMG_URL)
-    print(ROOT_URL.replace("\\media",""))
-    print(IMG_URL)
-    imageUrl = IMG_URL.replace(ROOT_URL.replace("\\media",""),"")
+    # Check if image is either InMemoryUploadedFile or TemporaryUploadedFile
+
+    if isinstance(image, uploadedfile.InMemoryUploadedFile):
+        
+        # Save from memory to disk
+        with open(IMG_URL, 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+       
+    elif isinstance(image, uploadedfile.TemporaryUploadedFile):
+       
+        im = Image.open(image.temporary_file_path())
+        im = im.save(IMG_URL)
+
+
+    # Configuring response url
+    if "\\media" in ROOT_URL:
+        ROOT_URL = ROOT_URL.replace("\\media", "")
+    imageUrl = IMG_URL.replace(ROOT_URL, "")
     data = {
         "imageUrl": imageUrl
     }
-    print(imageUrl)
-    return Response(data, status=status.HTTP_200_OK)
-
-
     
-
-
-
+    return Response(data, status=status.HTTP_200_OK)
