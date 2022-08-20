@@ -4,11 +4,12 @@ from rest_framework import generics
 from . import serializers
 
 class RestaurantListCreateAPIView(generics.ListCreateAPIView):
-    # Filter by status
     queryset = models.Restaurant.objects.filter(Q(status="ACTIVE") | Q(status="PENDING"))
     serializer_class = serializers.RestaurantSerializer
     
-
+    def get_queryset(self):
+        username = self.request.query_params.get('username')
+        return super().get_queryset() 
 
 class RestaurantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Restaurant.objects.all()
@@ -45,6 +46,7 @@ class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Product.objects.filter(Q(status="ACTIVE") | Q(status="PENDING"))
     serializer_class = serializers.ProductSerializer
+
 
 
 
