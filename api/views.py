@@ -21,7 +21,7 @@ class RestaurantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     queryset = models.Restaurant.objects.all()
     serializer_class = serializers.RestaurantSerializer
 
-    def destroy(self):
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.status = "DELETED"
         instance.save()
@@ -43,7 +43,7 @@ class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     queryset = models.Category.objects.all()
     serializer_class = serializers.CategorySerializer
 
-    def destroy(self):
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.status = "DELETED"
         instance.save()
@@ -65,7 +65,7 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
 
-    def destroy(self):
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.status = "DELETED"
         instance.save()

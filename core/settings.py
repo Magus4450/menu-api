@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     # Custom
+    'account',
     'api',
 ]
 
@@ -77,6 +78,8 @@ DATABASES = {
     }
 }
 
+# Custom model for auth
+AUTH_USER_MODEL = 'account.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
