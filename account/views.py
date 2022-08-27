@@ -1,12 +1,14 @@
-from base64 import decode
-from rest_framework.decorators import api_view
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework import status
-from .models import CustomUser, TokenValidation
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.crypto import get_random_string
+
+from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from .models import CustomUser, TokenValidation
 
 
 @csrf_exempt
@@ -38,7 +40,7 @@ def register_view(request):
         first_name=firstName,
         last_name=lastName,
         email=email,
-        password=password,
+        password=make_password(password),
         is_active=False,   
     )
     user.save()
@@ -49,7 +51,7 @@ def register_view(request):
     send_mail(
         'Menu-App: Email Confirmation',
         f'Please insert your token: {token} to confirm your email',
-        'sugamkarki4450@gmail.com',
+        settings.APP_EMAIL,
         [email],
     )
 

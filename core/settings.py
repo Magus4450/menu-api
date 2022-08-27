@@ -1,8 +1,7 @@
-
-from .password import APP_PASSWORD
-from datetime import timedelta
 import os
+from datetime import timedelta
 from pathlib import Path
+from .password import APP_EMAIL, APP_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,7 +164,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'USER_AUTHENTICATION_RULE':
+        'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
@@ -184,5 +184,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAILS_PORT = 587
 
-EMAIL_HOST_USER = "sugamkarki4450@gmail.com"
+EMAIL_HOST_USER = APP_EMAIL
 EMAIL_HOST_PASSWORD = APP_PASSWORD
