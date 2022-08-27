@@ -1,4 +1,6 @@
 
+from .password import APP_PASSWORD
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -30,7 +32,11 @@ INSTALLED_APPS = [
 
     # Third Party
     'rest_framework',
+    'corsheaders',
     'django_filters',
+
+
+
 
     # Custom
     'account',
@@ -40,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -47,6 +54,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -130,11 +141,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 REST_FRAMEWORK = {
-'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-)
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -174,6 +184,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAILS_PORT = 587
 
-from .password import APP_PASSWORD
 EMAIL_HOST_USER = "sugamkarki4450@gmail.com"
 EMAIL_HOST_PASSWORD = APP_PASSWORD
