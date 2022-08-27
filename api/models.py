@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from django.utils import timezone
 
 
 OPTIONS = (("ACTIVE","ACTIVE"), ("PENDING","PENDING"), ("DELETED","DELETED"))
@@ -11,6 +10,7 @@ class Restaurant(models.Model):
     location = models.CharField(max_length=225, null=False, blank=False)
     imageUrl = models.TextField(default= DEFAULT_IMG, null=False, blank=False) 
     status = models.CharField(max_length=7, choices=OPTIONS, default=("PENDING", "PENDING"))
+    timeCreated = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -22,6 +22,8 @@ class Category(models.Model):
     restaurantId = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     imageUrl = models.TextField(default= DEFAULT_IMG, null=False, blank=False) 
     status = models.CharField(max_length=7, choices=OPTIONS, default=("PENDING", "PENDING"))
+    timeCreated = models.DateTimeField(auto_now_add=True)
+
 
 
     def __str__(self):
@@ -36,6 +38,8 @@ class Product(models.Model):
     description = models.TextField(default= DEFAULT_IMG, max_length=225, null=False, blank=False)
     imageUrl = models.TextField(null=False, blank=False)
     status = models.CharField(max_length=7, choices=OPTIONS, default=("PENDING", "PENDING"))
+    timeCreated = models.DateTimeField(default=timezone.now)
+
 
     def __str__(self):
         return self.name
