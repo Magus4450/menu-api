@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
+from django.core.signing import Signer
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -42,15 +43,29 @@ def register_view(request):
         email=email,
         password=make_password(password),
         is_active=False,   
+        restaurant_admin = True,
     )
     user.save()
 
 
     token = get_random_string(length=10).upper()
 
+    # Hasing the User ID
+    signer = Signer()
+    uid = signer.sign_object(user.id)
+    print(uid)
+
     send_mail(
         'Menu-App: Email Confirmation',
-        f'Please insert your token: {token} to confirm your email',
+        f"""
+        Please insert your token: {token} to confirm your email.\n
+
+        OR click on the link below:
+        http://localhost:3000/confirm-account/?userId={uid}&token={token}
+
+        TEMPORARY LINK:
+        http://localhost:8000/api/account/confirm/{uid}/{token}
+        """,
         settings.APP_EMAIL,
         [email],
     )
@@ -68,16 +83,24 @@ def register_view(request):
         status=status.HTTP_200_OK
     )
 
-@api_view(http_method_names=['POST'])
-def confirm_token(request):
+@api_view(http_method_names=['POST', 'GET'])
+def confirm_token(request, userId, token):
+    if request.method == 'POST':
+        try:
+            token = request.POST["token"]
+        except:
+            return Response({"message": "token is required!"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            userId = request.POST["userId"]
+        except:
+            return Response({"message": "userId is required!"}, status=status.HTTP_400_BAD_REQUEST)
+   
+
     try:
-        token = request.POST["token"]
+        userId = int(userId)
     except:
-        return Response({"message": "token is required!"}, status=status.HTTP_400_BAD_REQUEST)
-    try:
-        userId = request.POST["userId"]
-    except:
-        return Response({"message": "userId is required!"}, status=status.HTTP_400_BAD_REQUEST)
+        signer = Signer()
+        userId = signer.unsign_object(userId)
 
     try:
         tv = TokenValidation.objects.get(userId=userId)
