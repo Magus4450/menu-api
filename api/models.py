@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-
 OPTIONS = (("ACTIVE","ACTIVE"), ("PENDING","PENDING"), ("DELETED","DELETED"))
 DEFAULT_IMG = '\\media\\image\\test.jpg'
 class Restaurant(models.Model):
@@ -39,6 +38,9 @@ class Product(models.Model):
     imageUrl = models.TextField(null=False, blank=False)
     status = models.CharField(max_length=7, choices=OPTIONS, default=("PENDING", "PENDING"))
     timeCreated = models.DateTimeField(default=timezone.now)
+    productType = models.CharField(max_length=12, 
+        choices=(("VEG","VEG"), ("NON_VEG","NON_VEG"), ("CONTAINS_EGG", "CONTAINS_EGG")), default=("VEG", "VEG")
+    )
 
 
     def __str__(self):

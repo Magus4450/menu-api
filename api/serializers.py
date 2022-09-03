@@ -1,7 +1,8 @@
 
-from rest_framework import serializers
-from .models import Restaurant, Category, Product
 from django.utils.text import slugify
+from rest_framework import serializers
+
+from .models import Category, Product, Restaurant
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
@@ -53,6 +54,9 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'categoryId', 'restaurantId', 'name', 'price',
-                  'description', 'imageUrl', 'status', 'timeCreated')
-        extra_kwargs = {'slug': {'read_only': True},
-                        'timeCreated': {'read_only': True}}
+                  'description', 'imageUrl', 'status', 'timeCreated', 'productType')
+        extra_kwargs = {'timeCreated': {'read_only': True}}
+
+class UploadSerializer(serializers.Serializer):
+    image = serializers.FileField()
+    type = serializers.CharField(max_length=100)
